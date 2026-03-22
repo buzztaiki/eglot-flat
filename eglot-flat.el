@@ -22,6 +22,10 @@
 
 ;;
 
+;;; TODO
+;; - README
+;; - read vscode configuration
+
 ;;; Code:
 
 (require 'eglot)
