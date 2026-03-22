@@ -41,11 +41,13 @@
   "Global flat workspace configuration."
   :type '(repeat (cons (string :tag "Key") (sexp :tag "Value"))))
 
+;;;###autoload
 (defcustom eglot-flat-workspace-configuration nil
   "Flat workspace configuration."
   :type '(repeat (cons (string :tag "Key") (sexp :tag "Value")))
   :safe #'eglot-flat--workspace-configuration-safe-p)
 
+;;;###autoload
 (defun eglot-flat-workspace-configuration (_server)
   "Return workspace configuration by merging flat configurations.
 Merge variable `eglot-flat-global-workspace-configuration' and
