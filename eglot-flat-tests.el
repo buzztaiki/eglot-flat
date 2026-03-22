@@ -53,18 +53,19 @@
                                             :pylint (:enabled t)))
                         :gopls ( :usePlaceholders t))))))
 
-(ert-deftest test-eglot-flat--set ()
-  (should (equal (eglot-flat--set nil '(:a :b :c) 1)
+(ert-deftest test-eglot-flat--plist-put-in ()
+  (should (equal (eglot-flat--plist-put-in nil '(:a :b :c) 1)
                  '(:a (:b (:c 1)))))
-  (should (equal (eglot-flat--set '(:a (:b (:c 2))) '(:a :b :c) 1)
+  (should (equal (eglot-flat--plist-put-in '(:a (:b (:c 2))) '(:a :b :c) 1)
                  '(:a (:b (:c 1)))))
-  (should (equal (eglot-flat--set '(:a (:b (:z 2))) '(:a :b :c) 1)
+  (should (equal (eglot-flat--plist-put-in '(:a (:b (:z 2))) '(:a :b :c) 1)
                  '(:a (:b (:c 1 :z 2))))))
 
 (ert-deftest test-eglot-flat--workspace-configuration-safe-p ()
   (should (eglot-flat--workspace-configuration-safe-p nil))
   (should (eglot-flat--workspace-configuration-safe-p '(("key" . 1))))
-  (should (not (eglot-flat--workspace-configuration-safe-p "string"))))
+  (should (not (eglot-flat--workspace-configuration-safe-p "string")))
+  (should (not (eglot-flat--workspace-configuration-safe-p '(("key" . (a . b)))))))
 
 (provide 'eglot-flat-tests)
 ;;; eglot-flat-tests.el ends here

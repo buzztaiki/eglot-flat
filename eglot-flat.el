@@ -20,7 +20,7 @@
 
 ;;; Commentary:
 
-;;
+;; see README.md
 
 ;;; TODO
 ;; - read vscode configuration
@@ -46,20 +46,29 @@
   :safe #'eglot-flat--workspace-configuration-safe-p)
 
 (defun eglot-flat-workspace-configuration (_server)
-  "Transforms and merges flat configurations to the format expected by `eglot-workspace-configuration'."
+  "Return workspace configuration by merging flat configurations.
+Merge variable `eglot-flat-global-workspace-configuration' and
+variable `eglot-flat-workspace-configuration', converting dot-separated keys
+like \"yaml.format.enable\" into the nested plist format expected by
+`eglot-workspace-configuration'.
+
+To use this, set `eglot-workspace-configuration' to this function:
+  (setq-default eglot-workspace-configuration #\\='eglot-flat-workspace-configuration)"
+
   (cl-loop with config
            for (flat-key . value) in (append eglot-flat-global-workspace-configuration
                                              eglot-flat-workspace-configuration)
            for keys = (mapcar (lambda (x) (intern (concat ":" x)))
                               (split-string flat-key "\\."))
-           do (setq config (eglot-flat--set config keys value))
+           do (setq config (eglot-flat--plist-put-in config keys value))
            finally return config))
 
-(defun eglot-flat--set (plist keys value)
+(defun eglot-flat--plist-put-in (plist keys value)
+  "Put a VALUE into PLIST at the path specified by KEYS."
   (if (null keys)
       value
     (setf (plist-get plist (car keys))
-          (eglot-flat--set (plist-get plist (car keys)) (cdr keys) value))
+          (eglot-flat--plist-put-in (plist-get plist (car keys)) (cdr keys) value))
     plist))
 
 (defun eglot-flat--workspace-configuration-safe-p (conf)
