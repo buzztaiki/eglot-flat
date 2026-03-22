@@ -30,6 +30,7 @@
 (require 'eglot)
 (require 'jsonrpc)
 (require 'seq)
+(require 'cl-lib)
 
 (defgroup eglot-flat nil
   "Flat and mergeable workspace configuration support for Eglot."
