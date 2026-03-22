@@ -23,7 +23,6 @@
 ;;
 
 ;;; TODO
-;; - README
 ;; - read vscode configuration
 
 ;;; Code:
