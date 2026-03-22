@@ -27,8 +27,8 @@
 (require 'ert)
 (require 'eglot-flat)
 
-(ert-deftest test-eglot-flat-workspace-configuration ()
-  (let ((eglot-flat-workspace-configuration
+(ert-deftest test-eglot-flat-workspace-configuration-global-only ()
+  (let ((eglot-flat-global-workspace-configuration
          '(("gopls.usePlaceholders" . t)
            ("pylsp.plugins.pylint.enabled" . :json-false)
            ("pylsp.plugins.jedi_completion.fuzzy" . t)
@@ -39,20 +39,19 @@
                                           :pylint (:enabled :json-false)))
                       :gopls ( :usePlaceholders t))))))
 
-(ert-deftest test-eglot-flat-workspace-configuration ()
-  (let ((eglot-flat-workspace-configuration
+(ert-deftest test-eglot-flat-workspace-configuration-merge-global-and-project ()
+  (let ((eglot-flat-global-workspace-configuration
          '(("gopls.usePlaceholders" . t)
            ("pylsp.plugins.pylint.enabled" . :json-false)
            ("pylsp.plugins.jedi_completion.fuzzy" . t)
-           ("pylsp.plugins.jedi_completion.include_params" . t))))
-    (with-temp-buffer
-      (set (make-local-variable 'eglot-flat-workspace-configuration)
-           '(("pylsp.plugins.pylint.enabled" . t)))
-      (should (equal (eglot-flat-workspace-configuration nil)
+           ("pylsp.plugins.jedi_completion.include_params" . t)))
+        (eglot-flat-workspace-configuration
+         '(("pylsp.plugins.pylint.enabled" . t))))
+    (should (equal (eglot-flat-workspace-configuration nil)
                      '( :pylsp ( :plugins ( :jedi_completion ( :include_params t
                                                                :fuzzy t)
                                             :pylint (:enabled t)))
-                        :gopls ( :usePlaceholders t)))))))
+                        :gopls ( :usePlaceholders t))))))
 
 (ert-deftest test-eglot-flat--set ()
   (should (equal (eglot-flat--set nil '(:a :b :c) 1)
@@ -61,6 +60,11 @@
                  '(:a (:b (:c 1)))))
   (should (equal (eglot-flat--set '(:a (:b (:z 2))) '(:a :b :c) 1)
                  '(:a (:b (:c 1 :z 2))))))
+
+(ert-deftest test-eglot-flat--workspace-configuration-safe-p ()
+  (should (eglot-flat--workspace-configuration-safe-p nil))
+  (should (eglot-flat--workspace-configuration-safe-p '(("key" . 1))))
+  (should (not (eglot-flat--workspace-configuration-safe-p "string"))))
 
 (provide 'eglot-flat-tests)
 ;;; eglot-flat-tests.el ends here

@@ -29,19 +29,27 @@
 ;;; Code:
 
 (require 'eglot)
+(require 'jsonrpc)
+(require 'seq)
 
 (defgroup eglot-flat nil
   "Flat and mergeable workspace configuration support for Eglot."
   :prefix "eglot-flat-"
   :group 'eglot)
 
+(defcustom eglot-flat-global-workspace-configuration nil
+  "Global flat workspace configuration."
+  :type '(repeat (cons (string :tag "Key") (sexp :tag "Value"))))
+
 (defcustom eglot-flat-workspace-configuration nil
-  "Flat workspace configuration.")
+  "Flat workspace configuration."
+  :type '(repeat (cons (string :tag "Key") (sexp :tag "Value")))
+  :safe #'eglot-flat--workspace-configuration-safe-p)
 
 (defun eglot-flat-workspace-configuration (_server)
-  "Transforms the variable `eglot-flat-workspace-configuration' to the format expected by `eglot-workspace-configuration'."
+  "Transforms and merges flat configurations to the format expected by `eglot-workspace-configuration'."
   (cl-loop with config
-           for (flat-key . value) in (append (default-value 'eglot-flat-workspace-configuration)
+           for (flat-key . value) in (append eglot-flat-global-workspace-configuration
                                              eglot-flat-workspace-configuration)
            for keys = (mapcar (lambda (x) (intern (concat ":" x)))
                               (split-string flat-key "\\."))
@@ -54,6 +62,13 @@
     (setf (plist-get plist (car keys))
           (eglot-flat--set (plist-get plist (car keys)) (cdr keys) value))
     plist))
+
+(defun eglot-flat--workspace-configuration-safe-p (conf)
+  (and (listp conf)
+       (seq-every-p (lambda (x) (and (consp x)
+                                     (stringp (car x))
+                                     (ignore-errors (jsonrpc--json-encode (cdr x)))))
+                    conf)))
 
 (provide 'eglot-flat)
 ;;; eglot-flat.el ends here
