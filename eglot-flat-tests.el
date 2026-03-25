@@ -28,7 +28,7 @@
 (require 'eglot-flat)
 
 (ert-deftest test-eglot-flat-workspace-configuration-global-only ()
-  (let ((eglot-flat-global-workspace-configuration
+  (let ((eglot-flat-global-configuration
          '(("gopls.usePlaceholders" . t)
            ("pylsp.plugins.pylint.enabled" . :json-false)
            ("pylsp.plugins.jedi_completion.fuzzy" . t)
@@ -40,12 +40,12 @@
                       :gopls ( :usePlaceholders t))))))
 
 (ert-deftest test-eglot-flat-workspace-configuration-merge-global-and-project ()
-  (let ((eglot-flat-global-workspace-configuration
+  (let ((eglot-flat-global-configuration
          '(("gopls.usePlaceholders" . t)
            ("pylsp.plugins.pylint.enabled" . :json-false)
            ("pylsp.plugins.jedi_completion.fuzzy" . t)
            ("pylsp.plugins.jedi_completion.include_params" . t)))
-        (eglot-flat-project-workspace-configuration
+        (eglot-flat-project-configuration
          '(("pylsp.plugins.pylint.enabled" . t))))
     (should (equal (eglot-flat-workspace-configuration nil)
                      '( :pylsp ( :plugins ( :jedi_completion ( :include_params t
@@ -61,11 +61,11 @@
   (should (equal (eglot-flat--plist-put-in '(:a (:b (:z 2))) '(:a :b :c) 1)
                  '(:a (:b (:c 1 :z 2))))))
 
-(ert-deftest test-eglot-flat--workspace-configuration-safe-p ()
-  (should (eglot-flat--workspace-configuration-safe-p nil))
-  (should (eglot-flat--workspace-configuration-safe-p '(("key" . 1))))
-  (should (not (eglot-flat--workspace-configuration-safe-p "string")))
-  (should (not (eglot-flat--workspace-configuration-safe-p '(("key" . (a . b)))))))
+(ert-deftest test-eglot-flat--configuration-safe-p ()
+  (should (eglot-flat--configuration-safe-p nil))
+  (should (eglot-flat--configuration-safe-p '(("key" . 1))))
+  (should (not (eglot-flat--configuration-safe-p "string")))
+  (should (not (eglot-flat--configuration-safe-p '(("key" . (a . b)))))))
 
 (provide 'eglot-flat-tests)
 ;;; eglot-flat-tests.el ends here
