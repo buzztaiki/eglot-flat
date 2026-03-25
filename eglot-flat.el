@@ -37,21 +37,21 @@
   :prefix "eglot-flat-"
   :group 'eglot)
 
-(defcustom eglot-flat-global-workspace-configuration nil
+(defcustom eglot-flat-global-configuration nil
   "Global flat workspace configuration."
   :type '(repeat (cons (string :tag "Key") (sexp :tag "Value"))))
 
 ;;;###autoload
-(defcustom eglot-flat-project-workspace-configuration nil
+(defcustom eglot-flat-project-configuration nil
   "Flat workspace configuration for the current project."
   :type '(repeat (cons (string :tag "Key") (sexp :tag "Value")))
-  :safe #'eglot-flat--workspace-configuration-safe-p)
+  :safe #'eglot-flat--configuration-safe-p)
 
 ;;;###autoload
 (defun eglot-flat-workspace-configuration (_server)
   "Return workspace configuration by merging flat configurations.
-Merge `eglot-flat-global-workspace-configuration' and
-`eglot-flat-project-workspace-configuration', converting dot-separated keys
+Merge `eglot-flat-global-configuration' and
+`eglot-flat-project-configuration', converting dot-separated keys
 like \"yaml.format.enable\" into the nested plist format expected by
 `eglot-workspace-configuration'.
 
@@ -59,8 +59,8 @@ To use this, set `eglot-workspace-configuration' to this function:
   (setq-default eglot-workspace-configuration #\\='eglot-flat-workspace-configuration)"
 
   (cl-loop with config
-           for (flat-key . value) in (append eglot-flat-global-workspace-configuration
-                                             eglot-flat-project-workspace-configuration)
+           for (flat-key . value) in (append eglot-flat-global-configuration
+                                             eglot-flat-project-configuration)
            for keys = (mapcar (lambda (x) (intern (concat ":" x)))
                               (split-string flat-key "\\."))
            do (setq config (eglot-flat--plist-put-in config keys value))
@@ -74,7 +74,7 @@ To use this, set `eglot-workspace-configuration' to this function:
           (eglot-flat--plist-put-in (plist-get plist (car keys)) (cdr keys) value))
     plist))
 
-(defun eglot-flat--workspace-configuration-safe-p (conf)
+(defun eglot-flat--configuration-safe-p (conf)
   (and (listp conf)
        (seq-every-p (lambda (x) (and (consp x)
                                      (stringp (car x))

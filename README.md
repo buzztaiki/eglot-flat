@@ -10,19 +10,19 @@ First, put the following in your `init.el`:
 (setq-default eglot-workspace-configuration #'eglot-flat-workspace-configuration)
 ```
 
-Then, you can use `eglot-flat-global-workspace-configuration` to set global configuration for all servers:
+Then, you can use `eglot-flat-global-configuration` to set global workspace configuration for all servers:
 
 ```elisp
-(setopt eglot-flat-global-workspace-configuration
+(setopt eglot-flat-global-configuration
         '(("yaml.format.enable" . t)
           ("yaml.format.printWidth" . 120)))
 ```
 
-And then, you can use `eglot-flat-project-workspace-configuration` to set project-specific configuration:
+And then, you can use `eglot-flat-project-configuration` to set project-specific workspace configuration:
 
 ```elisp
-((nil . ((eglot-flat-project-workspace-configuration . (("yaml.format.singleQuote" . t)
-                                                        ("yaml.format.printWidth" . 80))))))
+((nil . ((eglot-flat-project-configuration . (("yaml.format.singleQuote" . t)
+                                              ("yaml.format.printWidth" . 80))))))
 ```
 
 As a result, the final configuration will be:
