@@ -22,7 +22,7 @@ And then, you can use `eglot-flat-project-workspace-configuration` to set projec
 
 ```elisp
 ((nil . ((eglot-flat-project-workspace-configuration . (("yaml.format.singleQuote" . t)
-                                                ("yaml.format.printWidth" . 80))))))
+                                                        ("yaml.format.printWidth" . 80))))))
 ```
 
 As a result, the final configuration will be:
