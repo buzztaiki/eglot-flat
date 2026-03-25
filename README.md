@@ -18,10 +18,10 @@ Then, you can use `eglot-flat-global-workspace-configuration` to set global conf
           ("yaml.format.printWidth" . 120)))
 ```
 
-And then, you can use `eglot-flat-workspace-configuration` to set project-specific configuration:
+And then, you can use `eglot-flat-project-workspace-configuration` to set project-specific configuration:
 
 ```elisp
-((nil . ((eglot-flat-workspace-configuration . (("yaml.format.singleQuote" . t)
+((nil . ((eglot-flat-project-workspace-configuration . (("yaml.format.singleQuote" . t)
                                                 ("yaml.format.printWidth" . 80))))))
 ```
 

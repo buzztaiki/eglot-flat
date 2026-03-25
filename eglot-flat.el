@@ -42,16 +42,16 @@
   :type '(repeat (cons (string :tag "Key") (sexp :tag "Value"))))
 
 ;;;###autoload
-(defcustom eglot-flat-workspace-configuration nil
-  "Flat workspace configuration."
+(defcustom eglot-flat-project-workspace-configuration nil
+  "Flat workspace configuration for the current project."
   :type '(repeat (cons (string :tag "Key") (sexp :tag "Value")))
   :safe #'eglot-flat--workspace-configuration-safe-p)
 
 ;;;###autoload
 (defun eglot-flat-workspace-configuration (_server)
   "Return workspace configuration by merging flat configurations.
-Merge variable `eglot-flat-global-workspace-configuration' and
-variable `eglot-flat-workspace-configuration', converting dot-separated keys
+Merge `eglot-flat-global-workspace-configuration' and
+`eglot-flat-project-workspace-configuration', converting dot-separated keys
 like \"yaml.format.enable\" into the nested plist format expected by
 `eglot-workspace-configuration'.
 
@@ -60,7 +60,7 @@ To use this, set `eglot-workspace-configuration' to this function:
 
   (cl-loop with config
            for (flat-key . value) in (append eglot-flat-global-workspace-configuration
-                                             eglot-flat-workspace-configuration)
+                                             eglot-flat-project-workspace-configuration)
            for keys = (mapcar (lambda (x) (intern (concat ":" x)))
                               (split-string flat-key "\\."))
            do (setq config (eglot-flat--plist-put-in config keys value))

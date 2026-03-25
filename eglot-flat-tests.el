@@ -45,7 +45,7 @@
            ("pylsp.plugins.pylint.enabled" . :json-false)
            ("pylsp.plugins.jedi_completion.fuzzy" . t)
            ("pylsp.plugins.jedi_completion.include_params" . t)))
-        (eglot-flat-workspace-configuration
+        (eglot-flat-project-workspace-configuration
          '(("pylsp.plugins.pylint.enabled" . t))))
     (should (equal (eglot-flat-workspace-configuration nil)
                      '( :pylsp ( :plugins ( :jedi_completion ( :include_params t
